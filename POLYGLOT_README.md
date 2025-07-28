@@ -119,31 +119,29 @@ We believe this makes it easy to incorporate Piranha in *"pipelining"*.
 <h4> <code>execute_piranha</code></h4>
 
 ```python
-from polyglot_piranha import execute_piranha, PiranhaArguments
-
 piranha_arguments = PiranhaArguments(
-    path_to_codebase = "...",
-    path_to_configurations = "...",
-    language= "java",
-    substitutions = {},
-    dry_run = False, 
-    cleanup_comments = True
+    language="java",
+    paths_to_codebase=["..."],
+    path_to_configurations="...",
+    substitutions={},
+    dry_run=False,
+    cleanup_comments=True,
 )
 piranha_summary = execute_piranha(piranha_arguments)
 ```
-The API `execute_piranha` accepts a `PiranhaArguments`
-An object of PiranhaArguments can be instantiated with the following arguments:
+The API `execute_piranha` accepts a `PiranhaArguments` object.
+An instance of `PiranhaArguments` can be created with the following fields:
 
-- (*required*) `path_to_codebase` (`str`): Path to source code folder
-- (*required*) `path_to_configuration` (`str`) : A directory containing files named `rules.toml` and `edges.toml`
+- (*required*) `paths_to_codebase` (`list[str]`): Paths to the source files or directories
+- (*required*) `path_to_configurations` (`str`): Directory containing `rules.toml` and `edges.toml`
   * `rules.toml`: *piranha rules* expresses the specific AST patterns to match and __replacement patterns__ for these matches (in-place). These rules can also specify the pre-built language specific cleanups to trigger.
   * `edges.toml` : expresses the flow between the rules
-- (*required*) `language` (`str`) : Target language (`java`, `py`, `kt`, `swift`, `py`, `ts` and `tsx`)
+- (*required*) `language` (`str`): Target language (`java`, `kt`, `kotlin`, `go`, `python`, `swift`, `typescript`, `tsx`, `thrift`, `strings`, `scm`, `scala`, `ruby`, `yaml`, `yml`)
 - (*required*) `substitutions` (`dict`): Substitutions to instantiate the initial set of feature flag rules
 - (*optional*) `dry_run` (`bool`) : Disables in-place rewriting of code
 - (*optional*) `cleanup_comments` (`bool`) : Enables deletion of associated comments
 - (*optional*) `cleanup_comments_buffer` (`usize`): The number of lines to consider for cleaning up the comments
-- (*optional*) `number_of_ancestors_in_parent_scope` (`usize`): The number of ancestors considered when `PARENT` rules
+- (*optional*) `number_of_ancestors_in_parent_scope` (`usize`): Number of ancestors considered when applying rules with `Parent` scope
 - (*optional*) `delete_file_if_empty` (`bool`): User option that determines whether an empty file will be deleted
 - (*optional*) `delete_consecutive_new_lines` (`bool`) : Replaces consecutive `\n`s  with a single `\n`
 
@@ -467,7 +465,7 @@ replace_node = "binary_expression"
 replace = "true"
 ```
 
-Currently, Piranha picks up the language specific configurations from `src/cleanup_rule/<language>`.
+Currently, Piranha picks up the language specific configurations from `src/cleanup_rules/<language>`.
 
 
 <h5> Example </h5>
