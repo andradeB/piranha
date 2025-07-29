@@ -1,0 +1,53 @@
+[[rules]]
+name = "simplify_if_statement_dynamic_true"
+query = """
+(
+  (if_statement
+    condition: (parenthesized_expression (_) @cond)
+    consequence: (_) @consequence
+    alternative: (_) @alternative
+  ) @if_statement
+  (#eq? @cond "@flag_condition")
+)
+"""
+replace = "@consequence"
+replace_node = "if_statement"
+holes = ["flag_condition"]
+groups = ["if_cleanup"]
+is_seed_rule = true
+
+[[rules]]
+name = "simplify_if_statement_dynamic_false"
+query = """
+(
+  (if_statement
+    condition: (parenthesized_expression (_) @cond)
+    consequence: (_) @consequence
+  ) @if_statement
+  (#eq? @cond "@flag_condition")
+)
+"""
+replace = "@consequence"
+replace_node = "if_statement"
+holes = ["flag_condition"]
+groups = ["if_cleanup"]
+is_seed_rule = true
+
+[[rules]]
+name = "remove_unnecessary_nested_block"
+query = """
+(
+  (statement_block
+    (statement_list
+      (_)* @pre
+      (statement_block
+        (statement_list) @nested.statements
+      ) @nested.block
+      (_)* @post
+    ) @outer.stmt_list
+  ) @outer.block
+)
+"""
+replace = "@nested.statements"
+replace_node = "nested.block"
+is_seed_rule = false
