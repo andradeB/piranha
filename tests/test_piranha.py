@@ -378,3 +378,45 @@ def test_kotlin_boolean_simplification():
         }
         return true
         }"""
+
+def test_typescript_if_cleanup():
+    rule = Rule(
+        name="cleanup_flag_true",
+        query="""
+        (
+            (if_statement
+                condition: (parenthesized_expression (_) @cond)
+                consequence: (_) @cons
+                alternative: (_) @alt
+            ) @if_stmt
+            (#eq? @cond "@flag_condition")
+        )""",
+        replace="@cons",
+        replace_node="if_stmt",
+        holes={"flag_condition"},
+        is_seed_rule=True,
+    )
+    args_ts = PiranhaArguments(
+        language="typescript",
+        paths_to_codebase=[
+            "crates/core/test-resources/typescript/if_cleanup/input/Sample.ts",
+        ],
+        substitutions={"flag_condition": "source.ff"},
+        rule_graph=RuleGraph(rules=[rule], edges=[]),
+        dry_run=True,
+    )
+    args_tsx = PiranhaArguments(
+        language="tsx",
+        paths_to_codebase=[
+            "crates/core/test-resources/typescript/if_cleanup/input/Sample.tsx",
+            "crates/core/test-resources/typescript/if_cleanup/input/Sample.jsx",
+        ],
+        substitutions={"flag_condition": "source.ff"},
+        rule_graph=RuleGraph(rules=[rule], edges=[]),
+        dry_run=True,
+    )
+    output_summaries = execute_piranha(args_ts) + execute_piranha(args_tsx)
+    assert len(output_summaries) == 2
+    assert is_as_expected(
+        "crates/core/test-resources/typescript/if_cleanup", output_summaries
+    )

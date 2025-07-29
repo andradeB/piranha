@@ -1,0 +1,9 @@
+[[edges]]
+scope = "Parent"
+from = "simplify_if_statement_dynamic_true"
+to = ["remove_unnecessary_nested_block"]
+
+[[edges]]
+scope = "Parent"
+from = "simplify_if_statement_dynamic_false"
+to = ["remove_unnecessary_nested_block"]

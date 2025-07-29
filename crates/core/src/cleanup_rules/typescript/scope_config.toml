@@ -1,0 +1,33 @@
+[[scopes]]
+name = "File"
+[[scopes.rules]]
+enclosing_node = """
+(source_file) @source_file
+"""
+scope = """(source_file) @sf"""
+
+[[scopes]]
+name = "Function-Method"
+[[scopes.rules]]
+enclosing_node = """
+(
+    (
+        [
+            (function_declaration name: (_) @n parameters: (formal_parameters) @pl)
+            (method_definition name: (_) @n parameters: (formal_parameters) @pl)
+        ]
+    ) @f_decl1
+)
+"""
+scope = """
+(
+    (
+        [
+            (function_declaration name: (_) @fn parameters: (formal_parameters) @paramlist)
+            (method_definition name: (_) @fn parameters: (formal_parameters) @paramlist)
+        ]
+    ) @f_decl2
+    (#eq? @fn "@n")
+    (#eq? @paramlist "@pl")
+)
+"""
